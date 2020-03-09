@@ -4,7 +4,7 @@ helpFunction()
 {
    echo ""
    echo "Usage: $0 -ht parameterA -lt parameterB -lp parameterC"
-   echo -e "\t-h Description of what is high power duty"
+   echo -e "\t-h Description of what is high power duty, 1 for 49secs, 2 for 49/2 secs, 3 for 49/3 secs"
    echo -e "\t-l Description of what is low power duty in seconds"
    echo -e "\t-n Description of how many loops you want to run"
    exit 1 # Exit script after printing help
@@ -37,7 +37,7 @@ npass=$((npass/high_duty))
 for ((i=1;i<$loop_cnt;i++))
 do
   echo "# Smoke test @400MHz 16section run:$i";
-  echo "./test_ghl_ifin_0 iters=4096 npass=$npass >> smoke_test.txt"
-  echo "Sleep 72 secs., then run next smoke"
-  echo "sleep $low_duty;"
+  ./test_ghl_ifin_0 iters=4096 npass=$npass
+  echo "Sleep $low_duty secs., then run next smoke"
+  sleep $low_duty;
 done
