@@ -11,6 +11,9 @@ sudo update-pciids
 sudo apt install dialog
 sudo apt install ssh
 sudo apt install net-tools
+sudo apt install screen
+sudo apt install vim
+sudo apt install minicom
 mkdir ~/jonathan1
 mkdir ~/jonathan1/GSI
 cp host-pcie-tests-ver-1-1-13.tar.gz ~/jonathan1/GSI/
@@ -18,6 +21,14 @@ cd ~/jonathan1/GSI/
 tar -zxvf host-pcie-tests-ver-1-1-13.tar.gz
 sudo ~/jonathan1/GSI/release_ver/x86/install/host-test-installation-kit-x86-222.run
 sudo chmod 755 /usr/local/bin/dialog-menu /usr/local/bin/dev_diagnostic-100_10_0_1
+
+
+#downgrade kernel
+sudo apt-get install linux-image-4.15.0-72-generic
+#using the older kernel version
+sudo cp grub /etc/default/grub
+
+
 
 
 cd -
@@ -33,3 +44,12 @@ echo "star and check the service"
 sudo systemctl start rc-local.service
 sudo systemctl status rc-local.service
 cat /usr/local/test.log
+
+# TODO
+## install the telnetd
+#Before the check version, tne server machine must run below module
+
+#sudo modprobe -r gsi_pci_plug
+#sudo modprobe gsi_pci_plug
+#lsmod | grep gsi
+#sudo /usr/local/bin/dialog-menu
