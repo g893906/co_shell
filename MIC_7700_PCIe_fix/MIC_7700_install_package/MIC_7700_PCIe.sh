@@ -16,9 +16,9 @@ sudo apt install vim
 sudo apt install minicom
 mkdir ~/jonathan1
 mkdir ~/jonathan1/GSI
-cp host-pcie-tests-ver-1-1-13.tar.gz ~/jonathan1/GSI/
+cp host-pcie-tests-ver-1-3-24.tar.gz ~/jonathan1/GSI/
 cd ~/jonathan1/GSI/
-tar -zxvf host-pcie-tests-ver-1-1-13.tar.gz
+tar -zxvf host-pcie-tests-ver-1-3-24.tar.gz
 sudo ~/jonathan1/GSI/release_ver/x86/install/host-test-installation-kit-x86-222.run
 sudo chmod 755 /usr/local/bin/dialog-menu /usr/local/bin/dev_diagnostic-100_10_0_1
 
