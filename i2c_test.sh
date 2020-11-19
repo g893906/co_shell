@@ -29,6 +29,7 @@ fi
 i2cset="i2cset -f -y 1"
 i2cget="i2cget -f -y 1"
 i2cget_voltage_value="i2cget -f -y 1 0x34 0x8b w"
+i2cget_current_value="i2cget -f -y 1 0x34 0x8c w"
 slave_addr=0x34
 page_addr=0x00
 exponent_addr=0x20
@@ -50,3 +51,18 @@ do
         sleep 1
     done
 done
+
+echo "=============================="
+echo "current hex value for ten times"
+echo "time delay is 1 sec between each read"
+echo "the current format is linear11, total hex is 16bit, MSB 5bit is 2's complement. "
+echo "11bits*2^(-?)="
+echo "=============================="
+$i2cset $slave_addr $page_addr 0
+echo "exponent value="
+for ((i=0;i<$loop_cnt;i++))
+do
+    $i2cget_current_value
+    sleep 1
+done
+
