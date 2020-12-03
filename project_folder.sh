@@ -1,32 +1,23 @@
- mkdir 01.PDR_CDR
- mkdir 01.schedule
- mkdir 02.design_doc
- mkdir 03.IC_parameter
- mkdir 04.stackup
- mkdir 05.sch_doc
- mkdir 06.PCB_MFG
- mkdir 07.MFG_doc
- mkdir 08.工程問題
- mkdir 09.board_file_gerber
- mkdir 10.SI_report
- mkdir 11.BOM
- mkdir 12.TRF
- mkdir 13.ME
- mkdir 14.Power
- mkdir 15.ref_design
- mkdir 16.datasheet
- mkdir 17.training_doc
- mkdir 18.SW
- mkdir 19.Testing
- mkdir 20.DVT_test_plan
- mkdir 21.Power_SW
- mkdir 22.EQT
- mkdir 23.photo
- mkdir 24.repair
- mkdir 25.symbol
- mkdir 26.preprogram
- mkdir 27.product_infom
- mkdir 28.Thermal
- mkdir 29.PCIe_test
- mkdir 30.C_document
- mkdir 30.Thermal
+mkdir 01.BOM
+mkdir 01.BOM_Review
+mkdir 02.Schematic
+mkdir 02.Schematic_Review
+mkdir 03.Mechanism
+mkdir 04.Layout
+mkdir 04.Layout_Review
+mkdir 04.Layout_Constraint_Rule
+mkdir 04.Panel
+mkdir 04.Stack-up
+mkdir 05.Gerber
+mkdir 06.Thermal
+mkdir 07.FW_SW
+mkdir 08.DVT
+mkdir 09.HW_Spec
+mkdir 10.SI_PI_Simulation_Report
+mkdir 11.Release_Note
+mkdir 12.Pilot_Run_Report
+mkdir 13.Other_Info
+mkdir 14.C23_related_Documents
+mkdir 15.C4_related_Documents
+touch Do_not_put_datasheet_in_the_folder.txt
+touch Project_Members_List.txt
