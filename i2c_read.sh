@@ -1,34 +1,51 @@
 #!/bin/bash
+#This script is used for Artesyn power brick that implemented in LEDA-E proto4-2 board
 
 i2cget="i2cget -f -y 1"
-i2cget_42_iout="i2cget -f -y 1 0x42 0x8c w"
-i2cget_42_vout="i2cget -f -y 1 0x42 0x8b w"
-i2cget_42_temp="i2cget -f -y 1 0x42 0x8f w"
-i2cget_42_sta="i2cget -f -y 1 0x42 0x79 w"
-i2cget_55_iout="i2cget -f -y 1 0x55 0x8c w"
-i2cget_55_temp="i2cget -f -y 1 0x55 0x8f w"
-i2cget_55_sta="i2cget -f -y 1 0x55 0x79 w"
-i2cget_55_vout="i2cget -f -y 1 0x55 0x8b w"
-echo "To record the 0x42 and 0x55 iout value"
+master="0x42"
+slave="0x41"
+freq="0x33 w"
+sta_byte="0x78"
+sta_wd="0x79 w"
+sta_vout="0x7a"
+sta_iout="0x7b"
+sta_in="0x7c"
+sta_temp="0x7e"
+read_vin="0x88 w"
+read_vout="0x8b w"
+read_iout="0x8c w"
+read_temp="0x8f w"
+read_freq="0x95 w"
+
 for j in {0..1000}
 do
-	echo "read the 0x42 iout" 
-    $i2cget_42_iout
-	echo "read the 0x42 temp" 
-    $i2cget_42_temp
-	echo "read the 0x42 status" 
-    $i2cget_42_sta
-	echo "read the 0x42 vout" 
-    $i2cget_42_vout
+    echo "read the master $master freq_set, status byte/word/vout/iout/vin/temp, read vin/vout/iout/temp/freq \n"
+    $i2cget $master $freq
+    $i2cget $master $sta_byte
+    $i2cget $master $sta_wd
+    $i2cget $master $sta_vout
+    $i2cget $master $sta_iout
+    $i2cget $master $sta_in
+    $i2cget $master $sta_temp
+    $i2cget $master $read_vin
+    $i2cget $master $read_vout
+    $i2cget $master $read_iout
+    $i2cget $master $read_temp
+    $i2cget $master $read_freq
 	sleep 2
-	echo "read the 0x55 iout" 
-    $i2cget_55_iout
-	echo "read the 0x55 temp" 
-    $i2cget_55_temp
-	echo "read the 0x55 status"	
-    $i2cget_55_sta
-	echo "read the 0x55 vout" 
-    $i2cget_55_vout
+    echo "read the slave $slave freq_set, status byte/word/vout/iout/vin/temp, read vin/vout/iout/temp/freq \n"
+    $i2cget $slave $freq
+    $i2cget $slave $sta_byte
+    $i2cget $slave $sta_wd
+    $i2cget $slave $sta_vout
+    $i2cget $slave $sta_iout
+    $i2cget $slave $sta_in
+    $i2cget $slave $sta_temp
+    $i2cget $slave $read_vin
+    $i2cget $slave $read_vout
+    $i2cget $slave $read_iout
+    $i2cget $slave $read_temp
+    $i2cget $slave $read_freq
 	sleep 2
 done
 
