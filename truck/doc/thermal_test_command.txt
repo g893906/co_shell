@@ -1,0 +1,2 @@
+cd ~/jonathan/GSI/WNC_rev2_loads_20200220
+./thermal_test_8sections.sh -l 72 -n 100 | tee 202003xx.log
