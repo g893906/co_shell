@@ -1,6 +1,35 @@
 #!/bin/bash
 #This script is used for LEDA-S FAN board ADT7476 controller
 
+helpFunction()
+{
+    echo ""
+    echo "Usage: $0 -f parameterB -s parameterC"
+    echo -e "\t-f Description of what fan#, must be 1, 2 or 3"
+    echo -e "\t-s Sescription of what speed, must be in the range 0~255"
+    exit 1 # Exit script after printing help
+}
+
+while getopts "f:s:" opt
+do
+    case "$opt" in
+        f ) fan_sel="$OPTARG";;
+        s ) fan_speed="$OPTARG";;
+        ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+    esac
+done
+
+# Print helpFunction in case parameter are empty
+if [ -z "$fan_sel" ] || [ -z "$fan_speed" ] || [ $fan_sel -lt 1 ] || [ $fan_sel -gt 3 ] || [ $fan_speed -lt 1 ] || [ $fan_speed -gt 255 ]
+then
+    echo "Some or all of the parameters are empty";
+    helpFunction
+fi
+echo "Total argument: $#"
+echo "fan selection is: $fan_sel"
+echo "fan speed is: $fan_speed"
+
+
 i2cset_fan_ctrl="i2cset -f -y 1 0x2e" #ADT7476 slave address is 0x23
 i2cget_fan_ctrl="i2cget -f -y 1 0x2e"
 GPIO_mux="0x7C"     #bit[4] set the VID as GPO function
@@ -83,14 +112,34 @@ $i2cset_fan_ctrl $PWM_FPWM $val
 val=$($i2cget_fan_ctrl $PWM_FPWM)
 echo "PWM_FPWM read value, $val"
 
-$i2cset_fan_ctrl $PWM3_val $mid
 
+if [ $fan_sel = "1" ] 
+then
+    $i2cset_fan_ctrl $PWM1_val $fan_speed
+elif [ $fan_sel = "2" ]
+then
+    $i2cset_fan_ctrl $PWM2_val $fan_speed
+elif [ $fan_sel = "3" ]
+then
+    $i2cset_fan_ctrl $PWM3_val $fan_speed
+fi
 
-echo "Fan #, tach low byte, tach high byte, dec value"
+echo "Fan sel, fan speed setting, fan speed RPM value"
 for j in {0..1000}
 do
-    low_byte=$($i2cget_fan_ctrl $FAN_TACH3_L)
-    high_byte=$($i2cget_fan_ctrl $FAN_TACH3_H)
+    if [ $fan_sel = "1" ] 
+    then
+        low_byte=$($i2cget_fan_ctrl $FAN_TACH1_L)
+        high_byte=$($i2cget_fan_ctrl $FAN_TACH1_H)
+    elif [ $fan_sel = "2" ] 
+    then
+        low_byte=$($i2cget_fan_ctrl $FAN_TACH2_L)
+        high_byte=$($i2cget_fan_ctrl $FAN_TACH2_H)
+    elif [ $fan_sel = "3" ]
+    then
+        low_byte=$($i2cget_fan_ctrl $FAN_TACH3_L)
+        high_byte=$($i2cget_fan_ctrl $FAN_TACH3_H)
+    fi
     #echo "low_byte,$low_byte"
     #echo "high_byte,$high_byte"
     low_byte=$(($low_byte))
@@ -98,10 +147,10 @@ do
     high_byte=`expr $high_byte \* 256`
     #echo "low_byte,$low_byte"
     #echo "high_byte,$high_byte"
-    tach3_val=`expr $high_byte \+ $low_byte`
-    fan3_speed=`expr $OSC_CLK \* $min_sec / $tach3_val`
-    #echo "tach3_val,$tach3_val"
-    echo "fan3_speed RPM,$FAN_TACH3_L, $FAN_TACH3_H, $fan3_speed"
+    tach_val=`expr $high_byte \+ $low_byte`
+    fan_r_speed=`expr $OSC_CLK \* $min_sec / $tach_val`
+    #echo "tach_val,$tach_val"
+    echo "$fan_sel,$fan_speed, $fan_r_speed"
     sleep 2
 done
 
