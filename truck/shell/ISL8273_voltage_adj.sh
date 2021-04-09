@@ -73,6 +73,8 @@ re_9090_ovp=$($i2cget_9090 $r_ovp w)
 re_9090_ovw=$($i2cget_9090 $r_ovw w)
 re_9090_uvp=$($i2cget_9090 $r_uvp w)
 re_9090_uvw=$($i2cget_9090 $r_uvw w)
+echo " ===setting value, vset, ovp, ovw, uvp, uvw, ov_max ===="
+echo "============================="
 if [ $target_v -eq 1 ]
 then
     echo "target vout is 0.95, ovp is 0.95*1.15, ovw is 0.95*1.1, uvp is 0.95*0.85, uvw is 0.95*0.9, vout_max is 0.95*1.1"
@@ -176,7 +178,11 @@ else
     echo "target vout is not supported, exit the script"
     exit 1 # Exit script after printing help
 fi
-
+echo ""
+echo "=============================================================================================================================================="
+echo "===a module vout, dec(vout)*2^-13, b module_vout, dec(vout)*2^-13, ucd9090 apu_vmon, dec(vmon)*2^-14, ucd9090 apu v status, bit7_f_bit6_w ===="
+echo "=============================================================================================================================================="
+echo ""
 for ((i=1;i<$mon_n;i++))
 do
     re_a_vout=$($i2cget_8273_a $r_vout w)
