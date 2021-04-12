@@ -57,6 +57,9 @@ r_uvp="0x44"
 r_uvw="0x43"
 r_ov_max="0x24"
 r_save_user="0x15"
+r_current="0x8c"
+r_temp_e="0x8e"
+r_temp_i="0x8d"
 r_vout="0x8b"
 #margin setting
 hex_margin_h="0xa4"
@@ -263,9 +266,11 @@ else
 fi
 echo ""
 echo "=============================================================================================================================================="
-echo "===a module vout, dec(vout)*2^-13, b module_vout, dec(vout)*2^-13, ucd9090 apu_vmon, dec(vmon)*2^-14, ucd9090 apu v status, bit7_f_bit6_w ===="
+echo "=12v:-10, 1v8:-13, 2v5:-13, 0v85:-14, 1v2:-14, 0v95:-14, 0v84:-14, 0v9_mgt:-14, 0v6:-15, t12v_I:-9(11bit), temp_ext:-(11bit),, temp_int:-(11bit)," 
 echo "=============================================================================================================================================="
 echo ""
+echo "timestamp,12v, 1v8, 2v5, 0v85, 1v2, 0v95, 0v84_ref, 0v9_mgt, 0v6, 12v current, temp_ext, temp_int"
+echo "exponent value,-10, -13, -13, -14, -14, -14, -14, -14, -15, -9, -9, -9"
 for ((i=1;i<$mon_n;i++))
 do
     re_a_vout=$($i2cget_8273_a $r_vout w)
@@ -274,17 +279,29 @@ do
     re_9090_apu_v_sta=$($i2cget_9090 $r_sta)
     re_9090_vmon=$($i2cget_9090 $r_vout w) 
     #====1v8, 2v5, 0v9_mgt, 0v85, and 1v2 voltage read============
+    $i2cset_9090 $r_9090_page 0x00
+    re_12v_vol=$($i2cget_9090 $r_vout w)
     $i2cset_9090 $r_9090_page 0x01
     re_1V8_vol=$($i2cget_9090 $r_vout w)
     $i2cset_9090 $r_9090_page 0x02
-    re_2V5_vol=$($i2cget_9090 $r_vout w)
-    $i2cset_9090 $r_9090_page 0x07
-    re_0v9_mgt_vol=$($i2cget_9090 $r_vout w)
+    re_2v5_vol=$($i2cget_9090 $r_vout w)
     $i2cset_9090 $r_9090_page 0x03
     re_0v85_vol=$($i2cget_9090 $r_vout w)
     $i2cset_9090 $r_9090_page 0x04
     re_1v2_vol=$($i2cget_9090 $r_vout w)
-    echo "a module vout, $re_a_vout, b module_vout, $re_b_vout, ucd9090 apu_vmon, $re_9090_vmon, ucd9090 apu v status, $re_9090_apu_v_sta"
-    echo "1v8, $re_1V8_vol, 2v5, $re_2V5_vol, 0v9_mgt, $re_0v9_mgt_vol, 0v85, $re_0v85_vol, 1v2, $re_1v2_vol"
+    $i2cset_9090 $r_9090_page 0x05
+    re_0v95_vol=$($i2cget_9090 $r_vout w)
+    $i2cset_9090 $r_9090_page 0x06
+    re_0v84_vol=$($i2cget_9090 $r_vout w)
+    $i2cset_9090 $r_9090_page 0x07
+    re_0v9_mgt_vol=$($i2cget_9090 $r_vout w)
+    $i2cset_9090 $r_9090_page 0x08
+    re_0v6_vol=$($i2cget_9090 $r_vout w)
+    $i2cset_9090 $r_9090_page 0x00
+    re_12v_temp_e=$($i2cget_9090 $r_temp_e w)
+    re_12v_temp_i=$($i2cget_9090 $r_temp_i w)
+    re_12v_amp=$($i2cget_9090 $r_current w)
+    NOW=$(date +"%T-%m-%d-%Y")
+    echo "$NOW, $(($re_12v_vol)), $(($re_1V8_vol)), $(($re_2v5_vol)), $(($re_0v85_vol)), $(($re_1v2_vol)), $(($re_0v95_vol)), $(($re_0v84_vol)), $(($re_0v9_mgt_vol)), $(($re_0v6_vol)), $re_12v_amp, $re_12v_temp_e, $re_12v_temp_i"
     sleep 2
 done
