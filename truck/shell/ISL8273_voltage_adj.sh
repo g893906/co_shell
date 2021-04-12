@@ -40,8 +40,8 @@ i2cget_8273_b="i2cget -f -y 1 0x1a"
 i2cset_9090="i2cset -f -y 1 0x34"
 i2cget_9090="i2cget -f -y 1 0x34"
 i2cset_549D22="i2cset -f -y 1 0x14"
-i2cget_549D22="i2cset -f -y 1 0x14"
-i2cset_549B22="i2cget -f -y 1 0x10"
+i2cget_549D22="i2cget -f -y 1 0x14"
+i2cset_549B22="i2cset -f -y 1 0x10"
 i2cget_549B22="i2cget -f -y 1 0x10"
 r_9090_page="0x00"
 r_9090_APU_rail="5"
@@ -75,59 +75,59 @@ $i2cset_549D22 $r_margin_l $hex_549D22_margin_l w #0.8075
 
 if [ $margin -eq 1 ]
 then
-    echo "set VDD1V8 as low margin"
     $i2cset_9090 $r_9090_page 0x01
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_l
-    echo "set VDD2V5 as low margin"
+    echo "set VDD1V8 as low margin, $($i2cget_9090 $r_margin) "
     $i2cset_9090 $r_9090_page 0x02
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_l
-    echo "set VDD0V9_MGT as low margin"
+    echo "set VDD2V5 as low margin, $($i2cget_9090 $r_margin) "
     $i2cset_9090 $r_9090_page 0x07
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_l
-    echo "set VDD1V2 as low margin"
+    echo "set VDD0V9_MGT as low margin, $($i2cget_9090 $r_margin) "
     $i2cset_549B22 $r_margin $hex_margin_l
-    echo "set VDD0V85 as low margin"
+    echo "set VDD0V85 as low margin, $($i2cget_549B22 $r_margin) "
     $i2cset_549D22 $r_margin $hex_margin_l
+    echo "set VDD1V2 as low margin, $($i2cget_549D22 $r_margin)"
 
 elif [ $margin -eq 2 ]
 then
-    echo "set VDD1V8 as high margin"
     $i2cset_9090 $r_9090_page 0x01
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_h
-    echo "set VDD2V5 as high margin"
+    echo "set VDD1V8 as high margin, $($i2cget_9090 $r_margin) "
     $i2cset_9090 $r_9090_page 0x02
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_h
-    echo "set VDD0V9_MGT as high margin"
+    echo "set VDD2V5 as high margin, $($i2cget_9090 $r_margin) "
     $i2cset_9090 $r_9090_page 0x07
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_h
-    echo "set VDD1V2 as high margin"
+    echo "set VDD0V9_MGT as high margin, $($i2cget_9090 $r_margin) "
     $i2cset_549B22 $r_margin $hex_margin_h
-    echo "set VDD0V85 as high margin"
+    echo "set VDD0V85 as high margin, $($i2cget_549B22 $r_margin) "
     $i2cset_549D22 $r_margin $hex_margin_h
+    echo "set VDD1V2 as high margin, $($i2cget_549D22 $r_margin)"
 elif [ $margin -eq 3 ]
 then
-    echo "set VDD1V8 as normal margin"
     $i2cset_9090 $r_9090_page 0x01
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_n
-    echo "set VDD2V5 as normal margin"
+    echo "set VDD1V8 as normal margin, $($i2cget_9090 $r_margin) "
     $i2cset_9090 $r_9090_page 0x02
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_n
-    echo "set VDD0V9_MGT as normal margin"
+    echo "set VDD2V5 as normal margin, $($i2cget_9090 $r_margin) "
     $i2cset_9090 $r_9090_page 0x07
     sleep 0.5
     $i2cset_9090 $r_margin $hex_margin_n
-    echo "set VDD1V2 as high margin"
+    echo "set VDD0V9_MGT as normal margin, $($i2cget_9090 $r_margin) "
     $i2cset_549B22 $r_margin $hex_margin_n
-    echo "set VDD0V85 as high margin"
+    echo "set VDD0V85 as normal margin, $($i2cget_549B22 $r_margin) "
     $i2cset_549D22 $r_margin $hex_margin_n
+    echo "set VDD1V2 as normal margin, $($i2cget_549D22 $r_margin)"
 fi
 
 # 0.95 related setting
@@ -275,17 +275,16 @@ do
     re_9090_vmon=$($i2cget_9090 $r_vout w) 
     #====1v8, 2v5, 0v9_mgt, 0v85, and 1v2 voltage read============
     $i2cset_9090 $r_9090_page 0x01
-    sleep 0.5
     re_1V8_vol=$($i2cget_9090 $r_vout w)
     $i2cset_9090 $r_9090_page 0x02
-    sleep 0.5
     re_2V5_vol=$($i2cget_9090 $r_vout w)
     $i2cset_9090 $r_9090_page 0x07
-    sleep 0.5
     re_0v9_mgt_vol=$($i2cget_9090 $r_vout w)
-    re_0v85_vol=$($i2cget_549D22 $r_vout w)
-    re_1v2_vol=$($i2cget_549B22 $r_vout w)
+    $i2cset_9090 $r_9090_page 0x03
+    re_0v85_vol=$($i2cget_9090 $r_vout w)
+    $i2cset_9090 $r_9090_page 0x04
+    re_1v2_vol=$($i2cget_9090 $r_vout w)
     echo "a module vout, $re_a_vout, b module_vout, $re_b_vout, ucd9090 apu_vmon, $re_9090_vmon, ucd9090 apu v status, $re_9090_apu_v_sta"
-    echo "1v8, $re_1V8_vol, 2v5, $re_2v5_vol, 0v9_mgt, $re_0v9_mgt_vol, 0v85, $re_0v85_vol, 1v2, $re_1v2_vol"
+    echo "1v8, $re_1V8_vol, 2v5, $re_2V5_vol, 0v9_mgt, $re_0v9_mgt_vol, 0v85, $re_0v85_vol, 1v2, $re_1v2_vol"
     sleep 2
 done
