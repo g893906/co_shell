@@ -303,5 +303,5 @@ do
     re_12v_amp=$($i2cget_9090 $r_current w)
     NOW=$(date +"%T-%m-%d-%Y")
     echo "$NOW, $(($re_12v_vol)), $(($re_1V8_vol)), $(($re_2v5_vol)), $(($re_0v85_vol)), $(($re_1v2_vol)), $(($re_0v95_vol)), $(($re_0v84_vol)), $(($re_0v9_mgt_vol)), $(($re_0v6_vol)), $re_12v_amp, $re_12v_temp_e, $re_12v_temp_i"
-    sleep 2
+    sleep 5
 done
