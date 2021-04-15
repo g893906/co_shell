@@ -18,7 +18,7 @@ do
 done
 
 # Print helpFunction in case parameter are empty
-if [ $margin -lt 1 ] || [ $margin -gt 2 ]
+if [ -z $option ] || [ $option -lt 1 ] || [ $option -gt 2 ]
 then
     echo "The option should be 1 or 2";
     helpFunction
@@ -28,10 +28,10 @@ fi
 echo "Totalargument: $#"
 echo "Option is: $target (1 for reading, 2 for setting)"
 
-i2cset_80D_m="i2cset -f -y 1 0x43"
-i2cset_80D_s="i2cset -f -y 1 0x42"
-i2cget_80D_m="i2cget -f -y 1 0x43"
-i2cget_80D_s="i2cget -f -y 1 0x42"
+i2cset_80D="i2cset -f -y 1"
+i2cget_80D="i2cget -f -y 1"
+master="0x43"
+slave="0x42"
 r_PAGE="0x00"
 r_FREQUENCY_SWITCH="0x33"           #2bytes
 r_VIN_UV_FAULT_LIMIT="0x59"         #2bytes
@@ -63,117 +63,44 @@ h_PAGE_1="0x01"
 h_PAGE_all="0xff"
 if [ $option -eq 1 ]
 then
-    $i2cset_80D_m $r_PAGE $h_PAGE_0
-    h_FREQUENCY_SWITCH=$($i2cget_80D_m $r_FREQUENCY_SWITCH w)       
-    h_VIN_UV_FAULT_LIMIT=$($i2cget_80D_m $r_VIN_UV_FAULT_LIMIT w)     
-    h_VIN_UV_WARN_LIMIT=$($i2cget_80D_m $r_VIN_UV_WARN_LIMIT w)      
-    h_VIN_OV_FAULT_LIMIT=$($i2cget_80D_m $r_VIN_OV_FAULT_LIMIT w)     
-    h_VIN_OV_WARN_LIMIT=$($i2cget_80D_m $r_VIN_OV_WARN_LIMIT w)      
-    h_OT_FAULT_LIMIT=$($i2cget_80D_m $r_OT_FAULT_LIMIT w)         
-    h_OT_WARN_LIMIT=$($i2cget_80D_m $r_OT_WARN_LIMIT w)          
-    h_VOUT_OV_FAULT_LIMIT=$($i2cget_80D_m $r_VOUT_OV_FAULT_LIMIT w)    
-    h_IOUT_AVG_OC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_AVG_OC_FAULT_LIMIT w)
-    h_IOUT_OC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_OC_FAULT_LIMIT w)    
-    h_IOUT_CAL_GAIN=$($i2cget_80D_m $r_IOUT_CAL_GAIN w)          
-    h_IOUT_CAL_OFFSET=$($i2cget_80D_m $r_IOUT_CAL_OFFSET w)        
-    h_IOUT_UC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_UC_FAULT_LIMIT w)    
-    h_ISENSE_CONFIG=$($i2cget_80D_m $r_ISENSE_CONFIG w)          
-    h_IOUT_AVG_UC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_AVG_UC_FAULT_LIMIT w)
-    h_VOUT_COMMAND=$($i2cget_80D_m $r_VOUT_COMMAND w)      
-    h_VOUT_MAX=$($i2cget_80D_m $r_VOUT_MAX w)               
-    h_VOUT_UV_FAULT_LIMIT=$($i2cget_80D_m $r_VOUT_UV_FAULT_LIMIT w)
-    h_VOUT_MARGIN_HIGH=$($i2cget_80D_m $r_VOUT_MARGIN_HIGH w)
-    h_VOUT_MARGIN_LOW=$($i2cget_80D_m $r_VOUT_MARGIN_LOW w)
-    h_POWER_GOOD_ON=$($i2cget_80D_m $r_POWER_GOOD_ON w)
-    h_INTERLEAVE=$($i2cget_80D_m $r_INTERLEAVE w)
-    h_VOUT_DROOP=$($i2cget_80D_m $r_VOUT_DROOP w)
-    h_MULTI_PHASE_RAMP_GAIN=$($i2cget_80D_m $r_MULTI_PHASE_RAMP_GAIN)
-    echo "h_FREQUENCY_SWITCH, h_VIN_UV_FAULT_LIMIT, h_VIN_UV_WARN_LIMIT, h_VIN_OV_FAULT_LIMIT, h_VIN_OV_WARN_LIMIT, h_OT_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_IOUT_AVG_OC_FAULT_LIMIT, h_IOUT_OC_FAULT_LIMIT, h_IOUT_CAL_GAIN, h_IOUT_CAL_OFF, h_IOUT_UC_FAULT_LIMIT, h_ISENSE_CONFIG,  h_IOUT_AVG_UC_FAULT_LIMIT, h_VOUT_COMMAND, h_VOUT_MAX, h_VOUT_UV_FAULT_LIMIT, h_VOUT_MARGIN_HIGH, h_VOUT_MARGIN_LOW, h_POWER_GOOD_ON, h_INTERLEAVE, h_VOUT_DROOP, h_MULTI_PHASE_RAMP_GAIN"
-    echo "$h_FREQUENCY_SWITCH, $h_VIN_UV_FAULT_LIMIT, $h_VIN_UV_WARN_LIMIT, $h_VIN_OV_FAULT_LIMIT, $h_VIN_OV_WARN_LIMIT, $h_OT_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_IOUT_AVG_OC_FAULT_LIMIT, $h_IOUT_OC_FAULT_LIMIT, $h_IOUT_CAL_GAIN, $h_IOUT_CAL_OFF, $h_IOUT_UC_FAULT_LIMIT, $h_ISENSE_CONFIG,  $h_IOUT_AVG_UC_FAULT_LIMIT, $h_VOUT_COMMAND, $h_VOUT_MAX, $h_VOUT_UV_FAULT_LIMIT, $h_VOUT_MARGIN_HIGH, $h_VOUT_MARGIN_LOW, $h_POWER_GOOD_ON, $h_INTERLEAVE, $h_VOUT_DROOP, $h_MULTI_PHASE_RAMP_GAIN"
-
-    $i2cset_80D_m $r_PAGE $h_PAGE_1
-    h_FREQUENCY_SWITCH=$($i2cget_80D_m $r_FREQUENCY_SWITCH w)       
-    h_VIN_UV_FAULT_LIMIT=$($i2cget_80D_m $r_VIN_UV_FAULT_LIMIT w)     
-    h_VIN_UV_WARN_LIMIT=$($i2cget_80D_m $r_VIN_UV_WARN_LIMIT w)      
-    h_VIN_OV_FAULT_LIMIT=$($i2cget_80D_m $r_VIN_OV_FAULT_LIMIT w)     
-    h_VIN_OV_WARN_LIMIT=$($i2cget_80D_m $r_VIN_OV_WARN_LIMIT w)      
-    h_OT_FAULT_LIMIT=$($i2cget_80D_m $r_OT_FAULT_LIMIT w)         
-    h_OT_WARN_LIMIT=$($i2cget_80D_m $r_OT_WARN_LIMIT w)          
-    h_VOUT_OV_FAULT_LIMIT=$($i2cget_80D_m $r_VOUT_OV_FAULT_LIMIT w)    
-    h_IOUT_AVG_OC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_AVG_OC_FAULT_LIMIT w)
-    h_IOUT_OC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_OC_FAULT_LIMIT w)    
-    h_IOUT_CAL_GAIN=$($i2cget_80D_m $r_IOUT_CAL_GAIN w)          
-    h_IOUT_CAL_OFFSET=$($i2cget_80D_m $r_IOUT_CAL_OFFSET w)        
-    h_IOUT_UC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_UC_FAULT_LIMIT w)    
-    h_ISENSE_CONFIG=$($i2cget_80D_m $r_ISENSE_CONFIG w)          
-    h_IOUT_AVG_UC_FAULT_LIMIT=$($i2cget_80D_m $r_IOUT_AVG_UC_FAULT_LIMIT w)
-    h_VOUT_COMMAND=$($i2cget_80D_m $r_VOUT_COMMAND w)      
-    h_VOUT_MAX=$($i2cget_80D_m $r_VOUT_MAX w)               
-    h_VOUT_UV_FAULT_LIMIT=$($i2cget_80D_m $r_VOUT_UV_FAULT_LIMIT w)
-    h_VOUT_MARGIN_HIGH=$($i2cget_80D_m $r_VOUT_MARGIN_HIGH w)
-    h_VOUT_MARGIN_LOW=$($i2cget_80D_m $r_VOUT_MARGIN_LOW w)
-    h_POWER_GOOD_ON=$($i2cget_80D_m $r_POWER_GOOD_ON w)
-    h_INTERLEAVE=$($i2cget_80D_m $r_INTERLEAVE w)
-    h_VOUT_DROOP=$($i2cget_80D_m $r_VOUT_DROOP w)
-    h_MULTI_PHASE_RAMP_GAIN=$($i2cget_80D_m $r_MULTI_PHASE_RAMP_GAIN)
-    echo "h_FREQUENCY_SWITCH, h_VIN_UV_FAULT_LIMIT, h_VIN_UV_WARN_LIMIT, h_VIN_OV_FAULT_LIMIT, h_VIN_OV_WARN_LIMIT, h_OT_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_IOUT_AVG_OC_FAULT_LIMIT, h_IOUT_OC_FAULT_LIMIT, h_IOUT_CAL_GAIN, h_IOUT_CAL_OFF, h_IOUT_UC_FAULT_LIMIT, h_ISENSE_CONFIG,  h_IOUT_AVG_UC_FAULT_LIMIT, h_VOUT_COMMAND, h_VOUT_MAX, h_VOUT_UV_FAULT_LIMIT, h_VOUT_MARGIN_HIGH, h_VOUT_MARGIN_LOW, h_POWER_GOOD_ON, h_INTERLEAVE, h_VOUT_DROOP, h_MULTI_PHASE_RAMP_GAIN"
-    echo "$h_FREQUENCY_SWITCH, $h_VIN_UV_FAULT_LIMIT, $h_VIN_UV_WARN_LIMIT, $h_VIN_OV_FAULT_LIMIT, $h_VIN_OV_WARN_LIMIT, $h_OT_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_IOUT_AVG_OC_FAULT_LIMIT, $h_IOUT_OC_FAULT_LIMIT, $h_IOUT_CAL_GAIN, $h_IOUT_CAL_OFF, $h_IOUT_UC_FAULT_LIMIT, $h_ISENSE_CONFIG,  $h_IOUT_AVG_UC_FAULT_LIMIT, $h_VOUT_COMMAND, $h_VOUT_MAX, $h_VOUT_UV_FAULT_LIMIT, $h_VOUT_MARGIN_HIGH, $h_VOUT_MARGIN_LOW, $h_POWER_GOOD_ON, $h_INTERLEAVE, $h_VOUT_DROOP, $h_MULTI_PHASE_RAMP_GAIN"
-
-    $i2cset_80D_s $r_PAGE $h_PAGE_0
-    h_FREQUENCY_SWITCH=$($i2cget_80D_s $r_FREQUENCY_SWITCH w)       
-    h_VIN_UV_FAULT_LIMIT=$($i2cget_80D_s $r_VIN_UV_FAULT_LIMIT w)     
-    h_VIN_UV_WARN_LIMIT=$($i2cget_80D_s $r_VIN_UV_WARN_LIMIT w)      
-    h_VIN_OV_FAULT_LIMIT=$($i2cget_80D_s $r_VIN_OV_FAULT_LIMIT w)     
-    h_VIN_OV_WARN_LIMIT=$($i2cget_80D_s $r_VIN_OV_WARN_LIMIT w)      
-    h_OT_FAULT_LIMIT=$($i2cget_80D_s $r_OT_FAULT_LIMIT w)         
-    h_OT_WARN_LIMIT=$($i2cget_80D_s $r_OT_WARN_LIMIT w)          
-    h_VOUT_OV_FAULT_LIMIT=$($i2cget_80D_s $r_VOUT_OV_FAULT_LIMIT w)    
-    h_IOUT_AVG_OC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_AVG_OC_FAULT_LIMIT w)
-    h_IOUT_OC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_OC_FAULT_LIMIT w)    
-    h_IOUT_CAL_GAIN=$($i2cget_80D_s $r_IOUT_CAL_GAIN w)          
-    h_IOUT_CAL_OFFSET=$($i2cget_80D_s $r_IOUT_CAL_OFFSET w)        
-    h_IOUT_UC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_UC_FAULT_LIMIT w)    
-    h_ISENSE_CONFIG=$($i2cget_80D_s $r_ISENSE_CONFIG w)          
-    h_IOUT_AVG_UC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_AVG_UC_FAULT_LIMIT w)
-    h_VOUT_COMMAND=$($i2cget_80D_s $r_VOUT_COMMAND w)      
-    h_VOUT_MAX=$($i2cget_80D_s $r_VOUT_MAX w)               
-    h_VOUT_UV_FAULT_LIMIT=$($i2cget_80D_s $r_VOUT_UV_FAULT_LIMIT w)
-    h_VOUT_MARGIN_HIGH=$($i2cget_80D_s $r_VOUT_MARGIN_HIGH w)
-    h_VOUT_MARGIN_LOW=$($i2cget_80D_s $r_VOUT_MARGIN_LOW w)
-    h_POWER_GOOD_ON=$($i2cget_80D_s $r_POWER_GOOD_ON w)
-    h_INTERLEAVE=$($i2cget_80D_s $r_INTERLEAVE w)
-    h_VOUT_DROOP=$($i2cget_80D_s $r_VOUT_DROOP w)
-    h_MULTI_PHASE_RAMP_GAIN=$($i2cget_80D_s $r_MULTI_PHASE_RAMP_GAIN)
-    echo "h_FREQUENCY_SWITCH, h_VIN_UV_FAULT_LIMIT, h_VIN_UV_WARN_LIMIT, h_VIN_OV_FAULT_LIMIT, h_VIN_OV_WARN_LIMIT, h_OT_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_IOUT_AVG_OC_FAULT_LIMIT, h_IOUT_OC_FAULT_LIMIT, h_IOUT_CAL_GAIN, h_IOUT_CAL_OFF, h_IOUT_UC_FAULT_LIMIT, h_ISENSE_CONFIG,  h_IOUT_AVG_UC_FAULT_LIMIT, h_VOUT_COMMAND, h_VOUT_MAX, h_VOUT_UV_FAULT_LIMIT, h_VOUT_MARGIN_HIGH, h_VOUT_MARGIN_LOW, h_POWER_GOOD_ON, h_INTERLEAVE, h_VOUT_DROOP, h_MULTI_PHASE_RAMP_GAIN"
-    echo "$h_FREQUENCY_SWITCH, $h_VIN_UV_FAULT_LIMIT, $h_VIN_UV_WARN_LIMIT, $h_VIN_OV_FAULT_LIMIT, $h_VIN_OV_WARN_LIMIT, $h_OT_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_IOUT_AVG_OC_FAULT_LIMIT, $h_IOUT_OC_FAULT_LIMIT, $h_IOUT_CAL_GAIN, $h_IOUT_CAL_OFF, $h_IOUT_UC_FAULT_LIMIT, $h_ISENSE_CONFIG,  $h_IOUT_AVG_UC_FAULT_LIMIT, $h_VOUT_COMMAND, $h_VOUT_MAX, $h_VOUT_UV_FAULT_LIMIT, $h_VOUT_MARGIN_HIGH, $h_VOUT_MARGIN_LOW, $h_POWER_GOOD_ON, $h_INTERLEAVE, $h_VOUT_DROOP, $h_MULTI_PHASE_RAMP_GAIN"
-
-    $i2cset_80D_s $r_PAGE $h_PAGE_1
-    h_FREQUENCY_SWITCH=$($i2cget_80D_s $r_FREQUENCY_SWITCH w)       
-    h_VIN_UV_FAULT_LIMIT=$($i2cget_80D_s $r_VIN_UV_FAULT_LIMIT w)     
-    h_VIN_UV_WARN_LIMIT=$($i2cget_80D_s $r_VIN_UV_WARN_LIMIT w)      
-    h_VIN_OV_FAULT_LIMIT=$($i2cget_80D_s $r_VIN_OV_FAULT_LIMIT w)     
-    h_VIN_OV_WARN_LIMIT=$($i2cget_80D_s $r_VIN_OV_WARN_LIMIT w)      
-    h_OT_FAULT_LIMIT=$($i2cget_80D_s $r_OT_FAULT_LIMIT w)         
-    h_OT_WARN_LIMIT=$($i2cget_80D_s $r_OT_WARN_LIMIT w)          
-    h_VOUT_OV_FAULT_LIMIT=$($i2cget_80D_s $r_VOUT_OV_FAULT_LIMIT w)    
-    h_IOUT_AVG_OC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_AVG_OC_FAULT_LIMIT w)
-    h_IOUT_OC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_OC_FAULT_LIMIT w)    
-    h_IOUT_CAL_GAIN=$($i2cget_80D_s $r_IOUT_CAL_GAIN w)          
-    h_IOUT_CAL_OFFSET=$($i2cget_80D_s $r_IOUT_CAL_OFFSET w)        
-    h_IOUT_UC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_UC_FAULT_LIMIT w)    
-    h_ISENSE_CONFIG=$($i2cget_80D_s $r_ISENSE_CONFIG w)          
-    h_IOUT_AVG_UC_FAULT_LIMIT=$($i2cget_80D_s $r_IOUT_AVG_UC_FAULT_LIMIT w)
-    h_VOUT_COMMAND=$($i2cget_80D_s $r_VOUT_COMMAND w)      
-    h_VOUT_MAX=$($i2cget_80D_s $r_VOUT_MAX w)               
-    h_VOUT_UV_FAULT_LIMIT=$($i2cget_80D_s $r_VOUT_UV_FAULT_LIMIT w)
-    h_VOUT_MARGIN_HIGH=$($i2cget_80D_s $r_VOUT_MARGIN_HIGH w)
-    h_VOUT_MARGIN_LOW=$($i2cget_80D_s $r_VOUT_MARGIN_LOW w)
-    h_POWER_GOOD_ON=$($i2cget_80D_s $r_POWER_GOOD_ON w)
-    h_INTERLEAVE=$($i2cget_80D_s $r_INTERLEAVE w)
-    h_VOUT_DROOP=$($i2cget_80D_s $r_VOUT_DROOP w)
-    h_MULTI_PHASE_RAMP_GAIN=$($i2cget_80D_s $r_MULTI_PHASE_RAMP_GAIN)
-    echo "h_FREQUENCY_SWITCH, h_VIN_UV_FAULT_LIMIT, h_VIN_UV_WARN_LIMIT, h_VIN_OV_FAULT_LIMIT, h_VIN_OV_WARN_LIMIT, h_OT_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_OT_WARN_LIMIT, h_VOUT_OV_FAULT_LIMIT, h_IOUT_AVG_OC_FAULT_LIMIT, h_IOUT_OC_FAULT_LIMIT, h_IOUT_CAL_GAIN, h_IOUT_CAL_OFF, h_IOUT_UC_FAULT_LIMIT, h_ISENSE_CONFIG,  h_IOUT_AVG_UC_FAULT_LIMIT, h_VOUT_COMMAND, h_VOUT_MAX, h_VOUT_UV_FAULT_LIMIT, h_VOUT_MARGIN_HIGH, h_VOUT_MARGIN_LOW, h_POWER_GOOD_ON, h_INTERLEAVE, h_VOUT_DROOP, h_MULTI_PHASE_RAMP_GAIN"
-    echo "$h_FREQUENCY_SWITCH, $h_VIN_UV_FAULT_LIMIT, $h_VIN_UV_WARN_LIMIT, $h_VIN_OV_FAULT_LIMIT, $h_VIN_OV_WARN_LIMIT, $h_OT_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_OT_WARN_LIMIT, $h_VOUT_OV_FAULT_LIMIT, $h_IOUT_AVG_OC_FAULT_LIMIT, $h_IOUT_OC_FAULT_LIMIT, $h_IOUT_CAL_GAIN, $h_IOUT_CAL_OFF, $h_IOUT_UC_FAULT_LIMIT, $h_ISENSE_CONFIG,  $h_IOUT_AVG_UC_FAULT_LIMIT, $h_VOUT_COMMAND, $h_VOUT_MAX, $h_VOUT_UV_FAULT_LIMIT, $h_VOUT_MARGIN_HIGH, $h_VOUT_MARGIN_LOW, $h_POWER_GOOD_ON, $h_INTERLEAVE, $h_VOUT_DROOP, $h_MULTI_PHASE_RAMP_GAIN"
+    for i in {0..1}
+    do
+        if [ $i -eq 0 ]
+        then
+            addr=$master
+        elif [ $i -eq 1 ]
+        then
+            addr=$slave
+        fi
+        for j in {0..1}
+        do
+            echo "$i2cset_80D $addr $r_PAGE $j"
+            echo "$i2cget_80D $addr $r_FREQUENCY_SWITCH w"       
+            echo "$i2cget_80D $addr $r_VIN_UV_FAULT_LIMIT w"     
+            echo "$i2cget_80D $addr $r_VIN_UV_WARN_LIMIT w"      
+            echo "$i2cget_80D $addr $r_VIN_OV_FAULT_LIMIT w"     
+            echo "$i2cget_80D $addr $r_VIN_OV_WARN_LIMIT w"      
+            echo "$i2cget_80D $addr $r_OT_FAULT_LIMIT w"         
+            echo "$i2cget_80D $addr $r_OT_WARN_LIMIT w"          
+            echo "$i2cget_80D $addr $r_VOUT_OV_FAULT_LIMIT w"    
+            echo "$i2cget_80D $addr $r_IOUT_AVG_OC_FAULT_LIMIT w"
+            echo "$i2cget_80D $addr $r_IOUT_OC_FAULT_LIMIT w"    
+            echo "$i2cget_80D $addr $r_IOUT_CAL_GAIN w"          
+            echo "$i2cget_80D $addr $r_IOUT_CAL_OFFSET w"        
+            echo "$i2cget_80D $addr $r_IOUT_UC_FAULT_LIMIT w"    
+            echo "$i2cget_80D $addr $r_ISENSE_CONFIG w"          
+            echo "$i2cget_80D $addr $r_IOUT_AVG_UC_FAULT_LIMIT w"
+            echo "$i2cget_80D $addr $r_VOUT_COMMAND w"      
+            echo "$i2cget_80D $addr $r_VOUT_MAX w"               
+            echo "$i2cget_80D $addr $r_VOUT_UV_FAULT_LIMIT w"
+            echo "$i2cget_80D $addr $r_VOUT_MARGIN_HIGH w"
+            echo "$i2cget_80D $addr $r_VOUT_MARGIN_LOW w"
+            echo "$i2cget_80D $addr $r_POWER_GOOD_ON w"
+            echo "$i2cget_80D $addr $r_INTERLEAVE w"
+            echo "$i2cget_80D $addr $r_VOUT_DROOP w"
+            echo "$i2cget_80D $addr $r_MULTI_PHASE_RAMP_GAIN"
+        done
+    done
 
 elif [ $option -eq 2 ]
 then
