@@ -8,6 +8,7 @@ cp -v /root/Data_Backup/redmine.files.tar .
 cp -v /root/Data_Backup/postgres.data.tar .
 
 docker run --rm --volumes-from shell_redmine_1 -v $(pwd):/backup redmine tar xvf /backup/redmine.config.tar
+docker run --rm --volumes-from shell_redmine_1 -v $(pwd):/backup redmine tar xvf /backup/redmine.files.tar
 docker run --rm --volumes-from shell_postgres_1 -v $(pwd):/backup postgres tar xvf /backup/postgres.data.tar
 
 cd /home/pi/jonathan/co_shell/truck/shell

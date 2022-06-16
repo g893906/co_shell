@@ -1,6 +1,7 @@
 #!/bin/bash
 LOCAL_SUFFIX="`date "+%Y%m%d_%H%M"`"
 mkdir -p /root/Data_Backup/${LOCAL_SUFFIX}
+mkdir -p /mnt/Synology_NAS/Drive/raspberry_bakeup/${LOCAL_SUFFIX}
 
 cd /root/Redmine
 
@@ -20,6 +21,9 @@ cd /root/Redmine
 cp -v redmine.config.tar /root/Data_Backup/${LOCAL_SUFFIX}/redmine.config_${LOCAL_SUFFIX}.tar
 cp -v redmine.files.tar  /root/Data_Backup/${LOCAL_SUFFIX}/redmine.files_${LOCAL_SUFFIX}.tar
 cp -v postgres.data.tar  /root/Data_Backup/${LOCAL_SUFFIX}/postgres.data_${LOCAL_SUFFIX}.tar
+cp -v redmine.config.tar /mnt/Synology_NAS/Drive/raspberry_bakeup/${LOCAL_SUFFIX}/redmine.config_${LOCAL_SUFFIX}.tar
+cp -v redmine.files.tar  /mnt/Synology_NAS/Drive/raspberry_bakeup/${LOCAL_SUFFIX}/redmine.files_${LOCAL_SUFFIX}.tar
+cp -v postgres.data.tar  /mnt/Synology_NAS/Drive/raspberry_bakeup/${LOCAL_SUFFIX}/postgres.data_${LOCAL_SUFFIX}.tar
 
 mv redmine.config.tar /root/Data_Backup/
 mv redmine.files.tar  /root/Data_Backup/
